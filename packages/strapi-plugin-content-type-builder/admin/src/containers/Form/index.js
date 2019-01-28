@@ -32,7 +32,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { router } from 'app';
 
-import { temporaryContentTypeFieldsUpdated, storeTemporaryMenu } from 'containers/App/actions';
+import { temporaryContentTypeFieldsUpdated, storeTemporaryMenu, modelsFetch } from 'containers/App/actions';
 import { addAttributeToContentType, addAttributeRelationToContentType, editContentTypeAttribute, editContentTypeAttributeRelation, updateContentType } from 'containers/ModelPage/actions';
 
 import AttributeCard from 'components/AttributeCard';
@@ -88,6 +88,8 @@ export class Form extends React.Component { // eslint-disable-line react/prefer-
   componentDidMount() {
     // Get available db connections
     this.props.connectionsFetch();
+    // Get available models
+    this.props.modelsFetch();
     this.initComponent(this.props, true);
     document.addEventListener('keydown', this.handleKeyBinding);
   }
@@ -618,7 +620,19 @@ export class Form extends React.Component { // eslint-disable-line react/prefer-
     const renderCustomPopUpHeader = !includes(this.props.hash, '#choose') && includes(this.props.hash, '::attribute') ? this.renderCustomPopUpHeader(popUpTitle) : false;
     const dropDownItems = take(get(this.props.menuData, ['0', 'items']), size(get(this.props.menuData[0], 'items')) - 1);
     const edit = includes(this.props.hash, '#edit');
-    const selectOptions = includes(this.props.hash, 'attributenumber') ? get(this.props.form, ['items', '1', 'items']) : this.props.selectOptions;
+
+    // const selectOptions = includes(this.props.hash, 'attributenumber') ? get(this.props.form, ['items', '1', 'items']) : this.props.selectOptions;
+    let selectOptions
+    if (includes(this.props.hash, 'attributenumber')) {
+      // UNTESTED
+      // @TODO
+      selectOptions = get(this.props.form, ['items', '1', 'items'])
+    } else {
+      selectOptions = {
+        connection: this.props.connectionsSelectOptions || [],
+        parentModelName: this.props.modelsSelectOptions || [],
+      }
+    }
 
     if (includes(popUpFormType, 'relation')) {
       const contentType = this.props.modelName.split('&source=');
@@ -702,6 +716,7 @@ function mapDispatchToProps(dispatch) {
       contentTypeEdit,
       contentTypeFetch,
       contentTypeFetchSucceeded,
+      modelsFetch,
       removeContentTypeRequiredError,
       resetFormErrors,
       resetIsFormSet,
@@ -723,6 +738,7 @@ Form.propTypes = {
   changeInput: PropTypes.func.isRequired,
   changeInputAttribute: PropTypes.func.isRequired,
   connectionsFetch: PropTypes.func.isRequired,
+  connectionsSelectOptions: PropTypes.array.isRequired,
   contentTypeCreate: PropTypes.func.isRequired,
   contentTypeEdit: PropTypes.func.isRequired,
   contentTypeFetch: PropTypes.func.isRequired,
@@ -742,6 +758,8 @@ Form.propTypes = {
   menuData: PropTypes.array.isRequired,
   modelLoading: PropTypes.bool, // eslint-disable-line react/require-default-props
   modelName: PropTypes.string,
+  modelsFetch: PropTypes.func.isRequired,
+  modelsSelectOptions: PropTypes.array.isRequired,
   modifiedData: PropTypes.object.isRequired,
   modifiedDataAttribute: PropTypes.object.isRequired,
   modifiedDataEdit: PropTypes.object.isRequired,
@@ -751,7 +769,6 @@ Form.propTypes = {
   resetFormErrors: PropTypes.func.isRequired,
   resetIsFormSet: PropTypes.func.isRequired,
   routePath: PropTypes.string.isRequired,
-  selectOptions: PropTypes.array.isRequired,
   setAttributeForm: PropTypes.func.isRequired,
   setAttributeFormEdit: PropTypes.func.isRequired,
   setForm: PropTypes.func.isRequired,

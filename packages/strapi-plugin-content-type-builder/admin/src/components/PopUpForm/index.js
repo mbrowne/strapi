@@ -84,6 +84,9 @@ class PopUpForm extends React.Component { // eslint-disable-line react/prefer-st
       value = get(this.props.values, item.name, false);
     }
 
+    // const selectOptions = item.name === 'connection' ? this.props.selectOptions: []
+    const selectOptions = this.props.selectOptions[item.name] || []
+
     return (
       <Input
         key={key}
@@ -96,7 +99,8 @@ class PopUpForm extends React.Component { // eslint-disable-line react/prefer-st
         inputDescription={inputDescription}
         value={value}
         customBootstrapClass={customBootstrapClass}
-        selectOptions={this.props.selectOptions || []}
+        selectOptions={selectOptions}
+        // selectOptions={this.props.selectOptions || []}
         placeholder={item.placeholder}
         title={item.title}
         errors={errors}
@@ -223,7 +227,7 @@ PopUpForm.propTypes = {
     PropTypes.func,
   ]).isRequired,
   routePath: PropTypes.string,
-  selectOptions: PropTypes.array,
+  selectOptions: PropTypes.object,
   toggle: PropTypes.func.isRequired,
   values: PropTypes.object,
 };

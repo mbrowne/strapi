@@ -202,6 +202,8 @@ module.exports = {
 
     return {
       name: _.get(model, 'info.name', 'model.name.missing'),
+      parentModelName: _.get(model, 'parentModelName'),
+      isAbstract: _.get(model, 'isAbstract', false),
       description: _.get(model, 'info.description', 'model.description.missing'),
       mainField: _.get(model, 'info.mainField', ''),
       connection: model.connection,
@@ -214,7 +216,7 @@ module.exports = {
     return _.keys(strapi.config.currentEnvironment.database.connections);
   },
 
-  generateAPI: (name, description, connection, collectionName, attributes) => {
+  generateAPI: (name, description, parentModelName, connection, collectionName, attributes) => {
     const template = _.get(strapi.config.currentEnvironment, `database.connections.${connection}.connector`, 'strapi-hook-mongoose').split('-')[2];
 
     return new Promise((resolve, reject) => {
@@ -225,6 +227,7 @@ module.exports = {
         args: {
           api: name,
           description: _.replace(description, /\"/g, '\\"'), // eslint-disable-line no-useless-escape
+          parentModelName,
           attributes,
           connection,
           collectionName: !_.isEmpty(collectionName) ? collectionName : undefined,

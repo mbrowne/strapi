@@ -90,6 +90,9 @@ module.exports = (scope, cb) => {
   // Set collectionName
   scope.collectionName = _.has(scope.args, 'collectionName') ? scope.args.collectionName : undefined;
 
+  // Set parentModelName
+  scope.parentModelName = _.has(scope.args, 'parentModelName') ? scope.args.parentModelName : undefined;
+
   // Set description
   scope.description = _.has(scope.args, 'description') ? scope.args.description : undefined;
 

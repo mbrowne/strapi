@@ -47,6 +47,25 @@
         },
         {
           "label": {
+            "id": "content-type-builder.form.contentType.item.parentModel"
+          },
+          "name": "parentModelName",
+          "type": "select",
+          "items": [{}]
+        },
+        {
+          "label": {
+            "id": "content-type-builder.form.contentType.item.isAbstract"
+          },
+          "name": "isAbstract",
+          "type": "checkbox",
+          "value": false,
+          "inputDescription": {
+            "id": "content-type-builder.form.contentType.item.isAbstract.description"
+          }
+        },
+        {
+          "label": {
             "id": "content-type-builder.form.contentType.item.description"
           },
           "name": "description",

@@ -35,7 +35,16 @@ module.exports = {
   },
 
   createModel: async ctx => {
-    const { name, description, connection, collectionName, attributes = [], plugin } = ctx.request.body;
+    const {
+      name,
+      description,
+      connection,
+      parentModelName,
+      isAbstract,
+      collectionName,
+      attributes = [],
+      plugin
+    } = ctx.request.body;
 
     if (!name) return ctx.badRequest(null, [{ messages: [{ id: 'request.error.name.missing' }] }]);
     if (!_.includes(Service.getConnections(), connection)) return ctx.badRequest(null, [{ messages: [{ id: 'request.error.connection.unknow' }] }]);
@@ -54,7 +63,7 @@ module.exports = {
 
     await Service.appearance(formatedAttributes, name);
 
-    await Service.generateAPI(name, _description, connection, collectionName, []);
+    await Service.generateAPI(name, _description, parentModelName, connection, collectionName, []);
 
     const modelFilePath = await Service.getModelPath(name, plugin);
 

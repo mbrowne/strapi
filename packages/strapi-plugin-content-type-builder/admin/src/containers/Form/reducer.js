@@ -5,7 +5,7 @@
  */
 
 import { fromJS, List, Map } from 'immutable';
-import { findIndex } from 'lodash';
+import { findIndex, upperFirst } from 'lodash';
 import {
   CHANGE_INPUT,
   CHANGE_INPUT_ATTRIBUTE,
@@ -23,13 +23,17 @@ import {
   SET_BUTTON_LOADING,
   UNSET_BUTTON_LOADING,
 } from './constants';
+import {
+  MODELS_FETCH_SUCCEEDED  
+} from 'containers/App/constants'
 
 /* eslint-disable new-cap */
 
 const initialState = fromJS({
   didCheckErrors: false,
-  selectOptionsFetchSucceeded: false,
-  selectOptions: List(),
+  connectionsSelectOptions: List(),
+  connectionOptionsFetchSucceeded: false,
+  modelsSelectOptions: List(),
   form: List(),
   formValidations: List(),
   formErrors: List(),
@@ -53,8 +57,19 @@ function formReducer(state = initialState, action) {
       return state.updateIn(action.keys, () => action.value);
     case CONNECTIONS_FETCH_SUCCEEDED:
       return state
-        .set('selectOptions', List(action.connections))
-        .set('selectOptionsFetchSucceeded', !state.get('selectOptionsFetchSucceeded'));
+        .set('connectionsSelectOptions', List(action.connections))
+        .set('connectionsOptionsFetchSucceeded', !state.get('connectionOptionsFetchSucceeded'));
+    case MODELS_FETCH_SUCCEEDED:
+      const inheritableModels = action.data.models
+        // @TODO
+        // .filter(({ name }) => name !== currentModelName)
+        .map(({ name }) => ({
+          name: upperFirst(name),
+          value: name,
+        }))
+      return state
+        .set('modelsSelectOptions', List([{name: '--Select--', value: ''}, ...inheritableModels]))
+        // .set('modelOptionsFetchSucceeded', !state.get('modelOptionsFetchSucceeded'));
     case CONTENT_TYPE_ACTION_SUCCEEDED:
       return state
         .set('shouldRefetchContentType', !state.get('shouldRefetchContentType'))
