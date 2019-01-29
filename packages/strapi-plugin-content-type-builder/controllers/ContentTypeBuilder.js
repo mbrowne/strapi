@@ -104,7 +104,7 @@ module.exports = {
 
   updateModel: async ctx => {
     const { model } = ctx.params;
-    const { name, description, mainField, connection, collectionName, attributes = [], plugin } = ctx.request.body;
+    const { name, description, parentModelName, isAbstract, mainField, connection, collectionName, attributes = [], plugin } = ctx.request.body;
 
     if (!name) return ctx.badRequest(null, [{ messages: [{ id: 'request.error.name.missing' }] }]);
     if (!_.includes(Service.getConnections(), connection)) return ctx.badRequest(null, [{ messages: [{ id: 'request.error.connection.unknow' }] }]);
@@ -126,7 +126,7 @@ module.exports = {
     strapi.reload.isWatching = false;
 
     if (name !== model) {
-      await Service.generateAPI(name, _description, connection, collectionName, []);
+      await Service.generateAPI(name, _description, parentModelName, connection, collectionName, []);
     }
 
     await Service.appearance(formatedAttributes, name, plugin);

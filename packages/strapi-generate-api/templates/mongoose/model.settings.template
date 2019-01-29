@@ -1,6 +1,7 @@
 {
   "connection": "<%= connection %>",
   "collectionName": "<%= collectionName || '' %>",
+  "parentModelName": "<%= parentModelName || '' %>",
   "info": {
     "name": "<%= id %>",
     "description": "<%= description %>"
